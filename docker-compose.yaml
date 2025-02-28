@@ -69,16 +69,7 @@ services:
     restart: always
     depends_on:
       - kafka
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KAFKA_TOPIC: sensor-data
-      KAFKA_API_VERSION: 0.10.1
-      KAFKA_RETRIES: 3
-      KAFKA_ACKS: all
-      KAFKA_BATCH_SIZE: 16384
-      KAFKA_LINGER_MS: 0
-      KAFKA_COMPRESSION: gzip
-      KAFKA_MAX_IN_FLIGHT: 1
+
     logging:
       driver: "json-file"
       options:
