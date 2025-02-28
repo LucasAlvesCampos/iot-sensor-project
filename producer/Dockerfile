@@ -24,6 +24,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ app/
 COPY .env .
 
+# Copy test files
+COPY tests/ tests/
+
+# Install test dependencies
+RUN pip install pytest pytest-cov
+
 # Set Python path
 ENV PYTHONPATH=/app
 
