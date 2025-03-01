@@ -92,7 +92,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    command: ["pytest", "tests/test_consumer.py", "-v"]
+    # command: ["pytest", "tests/test_consumer.py", "-v"]
     # Comment out the original CMD in Dockerfile when running tests
 
 volumes:
