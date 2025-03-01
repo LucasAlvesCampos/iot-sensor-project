@@ -87,10 +87,13 @@ services:
     depends_on:
       - kafka
       - mongo
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      MONGODB_URI: mongodb://root:example@mongodb:27017/
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    command: ["pytest", "tests/test_consumer.py", "-v"]
+    # Comment out the original CMD in Dockerfile when running tests
 
 volumes:
   mongodb_data:
