@@ -119,7 +119,7 @@ db.sensor_data.aggregate([
 ```ini
 KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 KAFKA_TOPIC=sensor_data
-MONGODB_URI=mongodb://root:example@mongodb:27017/
+MONGODB_URI=mongodb://root:example@mongo:27017/
 ```
 
 ## Error Handling
