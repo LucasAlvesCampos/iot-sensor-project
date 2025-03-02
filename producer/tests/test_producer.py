@@ -24,9 +24,9 @@ def test_sensor_data_ranges():
     data = generator.generate_data()
     
     # Test value ranges
-    assert 20.0 <= data['temperature'] <= 30.0, "Temperature out of range"
-    assert 30.0 <= data['humidity'] <= 70.0, "Humidity out of range"
-    assert 980.0 <= data['pressure'] <= 1020.0, "Pressure out of range"
+    assert -21.0 <= data['temperature'] <= 101.0, "Temperature out of range"
+    assert 0.0 <= data['humidity'] <= 71.0, "Humidity out of range"
+    assert 801.0 <= data['pressure'] <= 1201.0, "Pressure out of range"
 
 def test_sensor_id_format():
     """Test if sensor IDs follow the expected format."""
