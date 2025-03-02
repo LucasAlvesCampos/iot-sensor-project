@@ -40,17 +40,23 @@ This project implements a scalable data pipeline for IoT sensor data with the fo
 1. Clone the repository:
 ```bash
 git clone https://github.com/LucasAlvesCampos/iot-sensor-project.git
+```
 
+2. Enter project directory
+```bash
 cd iot-sensor-project
+```
 
-2. Create environment files:
-
+3. Create environment files:
+```bash
 cp producer/.env.example producer/.env
 cp consumer/.env.example consumer/.env
+```
 
-3. Start the serice
-
+3. Start the services
+```bash
 docker-compose up -d
+```
 
 4.Monitor the services:
 
