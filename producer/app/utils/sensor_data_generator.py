@@ -28,9 +28,9 @@ class SensorDataGenerator:
         sensor_id = self.sensor_ids[self.current_index]
         self.current_index = (self.current_index + 1) % len(self.sensor_ids)
 
-        temperature = round(self.faker.pyfloat(min_value=20.0, max_value=30.0, right_digits=2), 2)
-        humidity = round(self.faker.pyfloat(min_value=30.0, max_value=70.0, right_digits=2), 2)
-        pressure = round(self.faker.pyfloat(min_value=980.0, max_value=1020.0, right_digits=2), 2)
+        temperature = round(self.faker.pyfloat(min_value=-21.0, max_value=101.0, right_digits=2), 2)
+        humidity = round(self.faker.pyfloat(min_value= 0.0, max_value=71.0, right_digits=2), 2)
+        pressure = round(self.faker.pyfloat(min_value=801.0, max_value=1201.0, right_digits=2), 2)
 
         return {
             'sensor_id': sensor_id,
@@ -39,3 +39,4 @@ class SensorDataGenerator:
             'humidity': humidity,
             'pressure': pressure
         }
+       

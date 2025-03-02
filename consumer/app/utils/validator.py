@@ -44,8 +44,8 @@ class SensorDataValidator:
     }
 
     VALUE_RANGES = {
-        'temperature': (-50.0, 100.0),  # Celsius
-        'humidity': (0.0, 100.0),       # Percentage
+        'temperature': (-20.0, 100.0),  # Celsius
+        'humidity': (0.0, 70.0),       # Percentage
         'pressure': (800.0, 1200.0)     # hPa
     }
 

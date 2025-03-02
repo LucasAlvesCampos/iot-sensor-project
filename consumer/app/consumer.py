@@ -48,8 +48,8 @@ class SensorDataConsumer:
             is_in_range, range_message, modified_data = (
                 SensorDataValidator.validate_value_ranges(data)
             )
-            if not is_in_range:
-                logger.warning(f"Value range warning: {range_message}")
+            if not is_in_range:             
+                logger.warning(f"Value range warning: {range_message} : {modified_data}")
 
             # Store the validated and modified data
             self.db_handler.store_reading(modified_data)
