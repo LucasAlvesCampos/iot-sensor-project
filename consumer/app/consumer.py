@@ -7,6 +7,8 @@ from kafka import KafkaConsumer
 from .utils.validator import SensorDataValidator
 from .utils.db_handler import DatabaseHandler
 from .config import KAFKA_CONFIG, MONGO_CONFIG
+from prometheus_client import start_http_server
+from .utils.prometheus_metrics import *
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +17,10 @@ class SensorDataConsumer:
 
     def __init__(self):
         """Initialize consumer with Kafka and MongoDB connections."""
+        # Start Prometheus metrics endpoint
+        start_http_server(8000)
+        logger.info("Prometheus metrics server started on port 8000")
+        
         self.consumer = self._create_consumer()
         self.db_handler = DatabaseHandler(
             MONGO_CONFIG['uri'],
@@ -37,29 +43,60 @@ class SensorDataConsumer:
         """Process a single message from Kafka."""
         try:
             data = message.value
+            MESSAGES_PROCESSED.inc()
             
             # Validate data structure and types
             is_valid, error_message = SensorDataValidator.validate_data(data)
             if not is_valid:
                 logger.warning(f"Invalid message format: {error_message}")
+                MESSAGES_INVALID.inc()
                 return
 
             # Validate value ranges
             is_in_range, range_message, modified_data = (
                 SensorDataValidator.validate_value_ranges(data)
             )
+                     
             if not is_in_range:             
                 logger.warning(f"Value range warning: {range_message} : {modified_data}")
+                
+                # Check status and out_of_range list in modified_data
+                if 'status' in modified_data and 'out_of_range' in modified_data['status']:
+                    # Get sensor_id first
+                    sensor_id = modified_data.get('sensor_id', 'unknown')
+                    
+                    for out_of_range_item in modified_data['status']['out_of_range']:
+                        field_name = out_of_range_item.get('field')
+                        if field_name:
+                            OUT_OF_RANGE_VALUES.labels(
+                                parameter=field_name, 
+                                sensor_id=sensor_id
+                            ).inc()
+                            logger.info(f"Incrementing out of range counter for {field_name} from sensor {sensor_id}")
+
+            # Update Prometheus gauges with current readings
+            sensor_id = modified_data.get('sensor_id', 'unknown')
+            
+            if 'temperature' in modified_data:                
+                TEMPERATURE_GAUGE.labels(sensor_id=sensor_id).set(modified_data['temperature'])
+                
+            if 'humidity' in modified_data:
+                HUMIDITY_GAUGE.labels(sensor_id=sensor_id).set(modified_data['humidity'])
+                
+            if 'pressure' in modified_data:
+                PRESSURE_GAUGE.labels(sensor_id=sensor_id).set(modified_data['pressure'])
 
             # Store the validated and modified data
             self.db_handler.store_reading(modified_data)
             
         except Exception as e:
             logger.error(f"Error processing message: {e}")
+            MESSAGES_INVALID.inc()
 
     def run(self) -> None:
         """Start consuming messages."""
         try:
+            logger.info("Starting consumer, ready to process messages...")
             for message in self.consumer:
                 self.process_message(message)
         except KeyboardInterrupt:
